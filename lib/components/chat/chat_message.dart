@@ -9,12 +9,10 @@ This widget is for displaying single message in the chart room
 class ChatMessage extends StatefulWidget {
   final bool isSentByUser;
   final String message;
-  final String time;
   const ChatMessage({
     super.key,
     required this.isSentByUser,
     required this.message,
-    required this.time,
   });
 
   @override
