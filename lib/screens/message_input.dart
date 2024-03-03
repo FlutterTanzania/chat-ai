@@ -6,6 +6,7 @@ import 'package:chatai/components/index.dart';
 import 'package:chatai/utils/index.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class MessageInput extends StatefulWidget {
   const MessageInput({
@@ -22,6 +23,8 @@ class _MessageInputState extends State<MessageInput> {
 
   // a bool value if text size is valid
   late bool textValid = false;
+
+  final String api_key = dotenv.env['API_KEY']!;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class _MessageInputState extends State<MessageInput> {
                 suffixTransform: 0.7,
                 onChanged: (value) {
                   // update if text is valid as keyboard is typed
-                  if (value.length > 5) {
+                  if (value.trim().length > 4) {
                     setState(() {
                       textValid = true;
                     });
@@ -79,5 +82,5 @@ class _MessageInputState extends State<MessageInput> {
   }
 
   // function to send an SMS
-  void _sendMessage() {}
+  void _sendMessage() async {}
 }
