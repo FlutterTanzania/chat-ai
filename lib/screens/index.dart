@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatRoom extends StatefulWidget {
   const ChatRoom({super.key});
@@ -38,6 +39,8 @@ class _ChatRoomState extends State<ChatRoom> {
   final String apikey = dotenv.env['API_KEY']!;
 
   late List<Map<String, dynamic>> messages = [];
+
+  late bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -107,21 +110,30 @@ class _ChatRoomState extends State<ChatRoom> {
                 ),
 
                 // send icon
-                Transform.rotate(
-                  angle: 0.7,
-                  child: IconButton(
-                    icon: Icon(
-                      CupertinoIcons.paperplane_fill,
+                // check if is loading and display a loadier
+                loading
+                    ? Padding(
+                        padding: EdgeInsets.only(left: Layout.getWidth(27)),
+                        child: LoadingAnimationWidget.inkDrop(
+                          color: Colors.black,
+                          size: Layout.getHeight(20),
+                        ),
+                      )
+                    : Transform.rotate(
+                        angle: 0.7,
+                        child: IconButton(
+                          icon: Icon(
+                            CupertinoIcons.paperplane_fill,
 
-                      // we check if input is more that five text we send
-                      color: textValid ? Colors.black : Styles.greyColor,
-                    ),
-                    onPressed: () {
-                      // we check if input is more that five text we send an sms
-                      if (textValid) _sendMessage();
-                    },
-                  ),
-                ),
+                            // we check if input is more that five text we send
+                            color: textValid ? Colors.black : Styles.greyColor,
+                          ),
+                          onPressed: () {
+                            // we check if input is more that five text we send an sms
+                            if (textValid) _sendMessage();
+                          },
+                        ),
+                      ),
               ],
             ),
           ),
@@ -135,7 +147,9 @@ class _ChatRoomState extends State<ChatRoom> {
     // insert to our message variable
     // this is the user who sent the message
     setState(() {
+      loading = true;
       messages.add({"sender": true, "message": _textEditingController.text});
+      textValid = false;
     });
 
     //
@@ -166,6 +180,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
         // add response
         messages.add({"sender": false, "message": value.text});
+        loading = false;
       });
     });
   }
